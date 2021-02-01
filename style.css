@@ -1,0 +1,39 @@
+/* CSS files add styling rules to your content */
+
+body {
+  font-family: "Helvetica Neue", helvetica, arial, sans-serif;
+  margin: 1em;
+}
+
+h1 {
+  color: #3949AB;
+  margin: 0;
+}
+
+button[disabled] {
+  opacity: 0.5;
+}
+
+button {
+  margin-bottom: 1em;
+  padding: 1em;
+  border: 1px solid #CFD8DC;
+  border-radius: 6px;
+  min-width: 80px;
+  background-color: #ECEFF1;
+}
+
+button.toggle-on {
+  background-color: #3949AB;
+  color: white;
+}
+
+button.red {
+  background-color: #F44336;
+  color: white;
+  border: 1px solid #C62828;
+}
+
+.inline-block {
+  display: inline-block;
+}
