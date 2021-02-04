@@ -46,7 +46,17 @@ export async function initDb() {
       nameList.forEach(async (name) => {
         await db.clear(name)
       })
-      // 得把索引库写回去
+      const { maxBagNum } = DB_CONFIG
+      const tableList = Array(maxBagNum).fill().map((v, i) => `${TABLE_PREFIX}_${i}`)
+      const tx = db.transaction(INDEX_TABLE_NAME, 'readwrite')
+      const txList = tableList.map((tableName, i) => tx.store.add({
+        index: i,
+        tableName,
+        bagId: '',
+        timeStamp: 0,
+      }))
+      txList.push(tx.done)
+      Promise.all(txList)
     }
   } catch (e) {
     console.log(e); 
@@ -121,7 +131,9 @@ export async function clearQuota(clearCurTable) {
   let alwaysNotEnough = true
   const db = await getDB()
   const hasQuota = await checkQuota()
-  if (!hasQuota) {
+  if (hasQuota) {
+    alwaysNotEnough = false
+  } else {
     const tableInfos = await getCanClearTableInfo(clearCurTable)
     while (tableInfos.length) {
       const tableInfo = tableInfos.shift()
@@ -156,8 +168,10 @@ export async function setCurTableData(data) {
         setIdbCanUse(false);
         throw e
       }
-    } else if (e.name !== 'QuotaExceededError') {
+    } else if (e.name !== 'QuotaExceededError' && getIdbCanUse()) {
       setIdbCanUse(false);
+      throw e
+    } else {
       throw e
     }
   }

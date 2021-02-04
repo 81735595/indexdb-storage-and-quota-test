@@ -105,14 +105,20 @@ export const queueManager = {
       switch(this.stausMap.get(key)) {
         case STATUS.WAITING:
           if (getIdbCanUse()) {
-            return this.run(key)
+            this.run(key)
+            return this.get(key) 
           } else {
-            return await this.fetch()
+            return await this.fetch(key)
           }
         case STATUS.FETCHING:
           return this.runningMap.get(key)
         case STATUS.CACHE:
-          return await getCurTableData(key)
+          try {
+            return await getCurTableData(key)
+          } catch (e) {
+            this.stausMap.set(key, STATUS.WAITING);
+            return this.get(key)
+          }
       }
     } else {
       await this.add(key)
