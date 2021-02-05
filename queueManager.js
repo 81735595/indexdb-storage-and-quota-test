@@ -1,12 +1,6 @@
 import { getCurTableInfo, getIdbCanUse, getCurTableData, setCurTableDataProxy } from './db.js'
 import { getData } from './utils.js'
 
-const STATUS = {
-  CACHE: 0,
-  FETCHING: 1,
-  WAITING: 2,
-}
-
 export const queueManager = {
   maxLen: 5,
   running: false,

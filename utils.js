@@ -1,20 +1,15 @@
-export const DB_NAME = 'sentinel3d';
-export const ONE_MEG = 1000000;
-export const TABLE_PREFIX = 'bag';
-export const INDEX_TABLE_NAME = 'index_table';
-export const DB_CONFIG = {
-  maxBagNum: 3,
-  expires: 7 * 24 * 60 * 60 * 1000
-}
+import { ONE_MEG, ITEM_SIZE } from './constant'
 
-let ITEM_SIZE = 1;
+const textDecoder = new TextDecoder('utf-8');
 
-export function setItemSize (v) {
-  ITEM_SIZE = v;
-}
-
-export function getItemSize () {
-  return ITEM_SIZE;
+function getArrayBuffer(size) {
+  const buffer = new ArrayBuffer(size);
+  const view = new Uint8Array(buffer);
+  const len = view.length;
+  for (let i = 0; i < len; i++) {
+    view[i] = Math.random() * (126 - 33) + 33;
+  }
+  return buffer;
 }
 
 export function formatToMB(val) {
@@ -28,18 +23,6 @@ export function formatToMB(val) {
     result = Math.round(val / ONE_MEG);
   }
   return `${result} MB`;
-}
-
-const textDecoder = new TextDecoder('utf-8');
-
-function getArrayBuffer(size) {
-  const buffer = new ArrayBuffer(size);
-  const view = new Uint8Array(buffer);
-  const len = view.length;
-  for (let i = 0; i < len; i++) {
-    view[i] = Math.random() * (126 - 33) + 33;
-  }
-  return buffer;
 }
 
 export function getRandomNumber(min, max) {
@@ -58,4 +41,11 @@ export async function getData() {
       resolve(data);
     }, getRandomNumber(1000, 3000))
   })
+}
+
+export function getBag() {
+  return {
+    id: getStr(8),
+    size: 20,
+  }
 }
